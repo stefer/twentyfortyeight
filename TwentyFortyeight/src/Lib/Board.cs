@@ -68,16 +68,10 @@ namespace TewntyFortyeight
 
         public void Right()
         {
-            for (int ri = First; ri < Size; ri++)
-            {
-                for (int ci = Last - 1; ci >= First; ci--)
-                {
-                    for (int i = ci + 1; i < Size; i++)
-                    {
+            foreach (int ri in Sequence(First, Last))
+                foreach (int ci in Sequence(First, Last - 1).Reverse())
+                    foreach (int i in Sequence(ci + 1, Last))
                         Shift(ri, i - 1, i);
-                    }
-                }
-            }
         }
 
 
@@ -107,6 +101,13 @@ namespace TewntyFortyeight
             }
         }
 
+        private IEnumerable<int> Sequence(int from, int to)
+        {
+            for (int i = from; i <= to; i++)
+            {
+                yield return i;
+            }
+        }
 
         public override string ToString()
         {
