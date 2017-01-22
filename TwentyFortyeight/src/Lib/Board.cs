@@ -17,6 +17,22 @@ namespace TewntyFortyeight
         private readonly int[][] cells = new int[Size][]
             { new int[Size], new int[Size] , new int[Size] , new int[Size], new int[Size], new int[Size],  new int[Size], new int[Size] };
 
+        private struct Index
+        {
+            public int rFrom;
+            public int rTo;
+            public int cFrom;
+            public int cTo;
+
+            public Index(int rFrom, int rTo, int cFrom, int cTo)
+            {
+                this.rFrom = rFrom;
+                this.rTo = rTo;
+                this.cFrom = cFrom;
+                this.cTo = cTo;
+            }
+        }
+
         public int[][] Cells
         {
             get { return cells; }
@@ -67,51 +83,35 @@ namespace TewntyFortyeight
 
         public void Right()
         {
-            var query = from ri in Sequence(First, Last)
-                        from ci in Sequence(First, Last - 1).Reverse()
-                        from i in Sequence(ci + 1, Last)
-                        select new { rFrom = ri, rTo = ri, cFrom = i - 1, cTo = i };
-
-            foreach (var item in query)
-            {
-                Shift(item.rFrom, item.rTo, item.cFrom, item.cTo);
-            }
+            ShiftAll(from ri in Sequence(First, Last)
+                     from ci in Sequence(First, Last - 1).Reverse()
+                     from i in Sequence(ci + 1, Last)
+                     select new Index(ri, ri, i - 1, i));
 
         }
-
-
-        public void Right2()
-        {
-            foreach (int ri in Sequence(First, Last))
-                foreach (int ci in Sequence(First, Last - 1).Reverse())
-                    foreach (int i in Sequence(ci + 1, Last))
-                        Shift(ri, ri, i - 1, i);
-        }
-
 
         public void Left()
         {
-            for (int ri = First; ri < Size; ri++)
-            {
-                for (int ci = First + 1; ci < Size; ci++)
-                {
-                    for (int i = ci - 1; i >= First; i--)
-                    {
-                        Shift(ri, ri, i + 1, i);
-                    }
-                }
-            }
+            ShiftAll(from ri in Sequence(First, Last)
+                     from ci in Sequence(First + 1, Last)
+                     from i in Sequence(First, ci - 1).Reverse()
+                     select new Index(ri, ri, i + 1, i));
         }
 
-        private void Shift(int rFrom, int rTo, int cFrom, int CTo)
+        private void ShiftAll(IEnumerable<Index> indices)
         {
-            var current = Get(rFrom, cFrom);
-            var candidate = Get(rTo, CTo);
+            foreach (var item in indices) Shift(item);
+        }
+
+        private void Shift(Index id)
+        {
+            var current = Get(id.rFrom, id.cFrom);
+            var candidate = Get(id.rTo, id.cTo);
             if (candidate == 0 || candidate == current)
             {
                 current += candidate;
-                Set(rTo, CTo, current);
-                Set(rFrom, cFrom, 0);
+                Set(id.rTo, id.cTo, current);
+                Set(id.rFrom, id.cFrom, 0);
             }
         }
 
