@@ -65,45 +65,45 @@ namespace TewntyFortyeight
             return Cells[i];
         }
 
+
         public void Right()
         {
-            for (int r = 0; r < Size; r++)
+            for (int ri = First; ri < Size; ri++)
             {
-                for (int c = Size - 2; c >= 0; c--)
+                for (int ci = Last - 1; ci >= First; ci--)
                 {
-                    var current = Get(r, c);
-                    for (int i = c + 1; i < Size; i++)
+                    for (int i = ci + 1; i < Size; i++)
                     {
-                        var candidate = Get(r, i);
-                        if (candidate == 0 || candidate == current)
-                        {
-                            current += candidate;
-                            Set(r, i, current);
-                            Set(r, i - 1, 0);
-                        }
+                        Shift(ri, i - 1, i);
                     }
                 }
             }
         }
 
+
         public void Left()
         {
-            for (int r = First; r < Size; r++)
+            for (int ri = First; ri < Size; ri++)
             {
-                for (int c = First + 1; c < Size; c++)
+                for (int ci = First + 1; ci < Size; ci++)
                 {
-                    var current = Get(r, c);
-                    for (int i = c - 1; i >= First; i--)
+                    for (int i = ci - 1; i >= First; i--)
                     {
-                        var candidate = Get(r, i);
-                        if (candidate == 0 || candidate == current)
-                        {
-                            current += candidate;
-                            Set(r, i, current);
-                            Set(r, i + 1, 0);
-                        }
+                        Shift(ri, i + 1, i);
                     }
                 }
+            }
+        }
+
+        private void Shift(int r, int from, int to)
+        {
+            var current = Get(r, from);
+            var candidate = Get(r, to);
+            if (candidate == 0 || candidate == current)
+            {
+                current += candidate;
+                Set(r, to, current);
+                Set(r, from, 0);
             }
         }
 
