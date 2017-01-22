@@ -65,13 +65,27 @@ namespace TewntyFortyeight
             return Cells[i];
         }
 
-
         public void Right()
+        {
+            var query = from ri in Sequence(First, Last)
+                        from ci in Sequence(First, Last - 1).Reverse()
+                        from i in Sequence(ci + 1, Last)
+                        select new { rFrom = ri, rTo = ri, cFrom = i - 1, cTo = i };
+
+            foreach (var item in query)
+            {
+                Shift(item.rFrom, item.rTo, item.cFrom, item.cTo);
+            }
+
+        }
+
+
+        public void Right2()
         {
             foreach (int ri in Sequence(First, Last))
                 foreach (int ci in Sequence(First, Last - 1).Reverse())
                     foreach (int i in Sequence(ci + 1, Last))
-                        Shift(ri, i - 1, i);
+                        Shift(ri, ri, i - 1, i);
         }
 
 
@@ -83,21 +97,21 @@ namespace TewntyFortyeight
                 {
                     for (int i = ci - 1; i >= First; i--)
                     {
-                        Shift(ri, i + 1, i);
+                        Shift(ri, ri, i + 1, i);
                     }
                 }
             }
         }
 
-        private void Shift(int r, int from, int to)
+        private void Shift(int rFrom, int rTo, int cFrom, int CTo)
         {
-            var current = Get(r, from);
-            var candidate = Get(r, to);
+            var current = Get(rFrom, cFrom);
+            var candidate = Get(rTo, CTo);
             if (candidate == 0 || candidate == current)
             {
                 current += candidate;
-                Set(r, to, current);
-                Set(r, from, 0);
+                Set(rTo, CTo, current);
+                Set(rFrom, cFrom, 0);
             }
         }
 
