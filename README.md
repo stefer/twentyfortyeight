@@ -5,7 +5,7 @@ Suddenly one evening, I thought that I would try and implement the populary game
 [TensorFlow](https://www.tensorflow.org/) to see if it could learn how to play the game.
 
 As it often go, the project took another path, partly because I realized that I might not
-get that far in one evening, but also because I found another challange in the task.
+get that far in one evening, but also because I found another challenge in the task.
 
 In the first version, I implemented the core shift and add algorithms like this:
 
@@ -56,10 +56,10 @@ When I shift right, I start from the second last column and shift the value to t
 I then repeat by taking the third last column, moving the value as far right I can.
 The algorithm to shift left is very similar.
 
-I realized that I would get two more functions like this, Up, and Down. 
-The code duplication in these function made me feel sick. What could I possibly do to improve this?
+I realised that I would get two more functions like this, Up, and Down. 
+The code duplication in these function made me feel sick. What could I possibly do to improve?
 
-Well, the first observation was at the innermost level, where I move or add, can be extracted as methd with parameters:
+Well, the first observation was at the innermost level, where I move or add, can be extracted as method with parameters:
 
 
     public void Right()
