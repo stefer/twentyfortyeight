@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TewntyFortyeight
+namespace TwentyFortyeight.Lib
 {
     public class Board
     {
@@ -12,7 +12,6 @@ namespace TewntyFortyeight
         public const int First = 0;
 
         public static Board Empty = new Board();
-        private readonly Random rand = new Random();
 
         private readonly int[][] cells = new int[Size][]
             { new int[Size], new int[Size] , new int[Size] , new int[Size], new int[Size], new int[Size],  new int[Size], new int[Size] };
@@ -51,12 +50,6 @@ namespace TewntyFortyeight
                     }
                 }
             }
-        }
-
-        public void Start()
-        {
-            Set(rand.Next(0, Size), rand.Next(0, Size), rand.Next(1, 3) * 2);
-            Set(rand.Next(0, Size), rand.Next(0, Size), rand.Next(1, 3) * 2);
         }
 
         public void Set(int r, int c, int value)

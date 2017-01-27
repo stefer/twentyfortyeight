@@ -2,7 +2,7 @@
 {
     using System;
     using System.Linq;
-    using TewntyFortyeight;
+    using TwentyFortyeight;
     using Xunit;
 
 
