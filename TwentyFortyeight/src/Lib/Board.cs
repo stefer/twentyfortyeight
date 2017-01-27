@@ -117,10 +117,7 @@ namespace TewntyFortyeight
 
         private IEnumerable<int> Sequence(int from, int to)
         {
-            for (int i = from; i <= to; i++)
-            {
-                yield return i;
-            }
+            return Enumerable.Range(from, to - from + 1);
         }
 
         public override string ToString()
