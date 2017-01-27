@@ -5,16 +5,32 @@ using System.Threading.Tasks;
 
 namespace TwentyFortyeight.Lib
 {
-    public class Board
+
+    public abstract class Board
     {
-        public const int Size = 8;
+        public const int Size = 4;
         public const int Last = Size - 1;
         public const int First = 0;
 
-        public static Board Empty = new Board();
+        public static Board Empty = new BoardImplementation();
+
+        public virtual int[][] Cells { get; }
+
+        public virtual IEnumerable<int> AllCells { get; }
+
+        public static Board Create()
+        {
+            return new BoardImplementation();
+        }
+
+        public abstract void Set(int v1, int v2, int v3);
+    }
+
+    public class BoardImplementation : Board
+    {
 
         private readonly int[][] cells = new int[Size][]
-            { new int[Size], new int[Size] , new int[Size] , new int[Size], new int[Size], new int[Size],  new int[Size], new int[Size] };
+            { new int[Size], new int[Size] , new int[Size] , new int[Size] };
 
         private struct Index
         {
@@ -32,12 +48,12 @@ namespace TwentyFortyeight.Lib
             }
         }
 
-        public int[][] Cells
+        public override int[][] Cells
         {
             get { return cells; }
         }
 
-        public IEnumerable<int> AllCells
+        public override IEnumerable<int> AllCells
         {
             get
             {
@@ -52,7 +68,7 @@ namespace TwentyFortyeight.Lib
             }
         }
 
-        public void Set(int r, int c, int value)
+        public override void Set(int r, int c, int value)
         {
             cells[r][c] = value;
         }
