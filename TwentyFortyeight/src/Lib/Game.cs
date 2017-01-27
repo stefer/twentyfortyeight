@@ -7,7 +7,7 @@ namespace TwentyFortyeight.Lib
     {
         private readonly Random rand = new Random();
 
-        public Board Board { get; set; } = new Board();
+        public Board Board { get; set; } = Board.Create();
 
         public void Start()
         {
