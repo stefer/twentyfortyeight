@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -59,7 +60,7 @@ namespace TwentyFortyeight.Lib
             {
                 for (int ri = 0; ri < cells.Length; ri++)
                 {
-                    int[] row = Get(ri);
+                    int[] row = GetRow(ri);
                     for (int ci = 0; ci < row.Length; ci++)
                     {
                         yield return row[ci];
@@ -68,26 +69,40 @@ namespace TwentyFortyeight.Lib
             }
         }
 
+        public int Get(int r, int c)
+        {
+            return cells[r][c];
+        }
+
         public override void Set(int r, int c, int value)
         {
             cells[r][c] = value;
         }
 
-        public void Set(int r, int[] values)
+        public int[] GetRow(int i)
+        {
+            return Cells[i];
+        }
+
+        public void SetRow(int r, int[] values)
         {
             if (values.Length != Size) throw new ArgumentException("Invalid array length", nameof(values));
 
             cells[r] = values;
         }
 
-        public int Get(int r, int c)
+        public int[] GetColumn(int ci)
         {
-            return cells[r][c];
+            return (from ri in Sequence(First, Last) select Get(ri, ci))
+                    .ToArray();
         }
 
-        public int[] Get(int i)
+        public void SetColumn(int ci, int[] values)
         {
-            return Cells[i];
+            foreach (var ri in Sequence(0, Last))
+            {
+                Set(ri, ci, values[ri]);
+            }
         }
 
         public void Right()
@@ -96,7 +111,6 @@ namespace TwentyFortyeight.Lib
                      from ci in Sequence(First, Last - 1).Reverse()
                      from i in Sequence(ci + 1, Last)
                      select new Index(ri, ri, i - 1, i));
-
         }
 
         public void Left()
@@ -105,6 +119,22 @@ namespace TwentyFortyeight.Lib
                      from ci in Sequence(First + 1, Last)
                      from i in Sequence(First, ci - 1).Reverse()
                      select new Index(ri, ri, i + 1, i));
+        }
+
+        public void Up()
+        {
+            ShiftAll(from ci in Sequence(First, Last)
+                     from ri in Sequence(First + 1, Last)
+                     from i in Sequence(First, ri - 1).Reverse()
+                     select new Index(i + 1, i, ci, ci));
+        }
+
+        public void Down()
+        {
+            ShiftAll(from ci in Sequence(First, Last)
+                     from ri in Sequence(First, Last - 1).Reverse()
+                     from i in Sequence(ri + 1, Last)
+                     select new Index(i - 1, i, ci, ci));
         }
 
         private void ShiftAll(IEnumerable<Index> indices)
