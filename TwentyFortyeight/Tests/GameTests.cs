@@ -1,6 +1,6 @@
 ﻿namespace Tests
 {
-    using System.Linq;
+    using Moq;
 
     using TwentyFortyeight.Lib;
     using Xunit;
@@ -10,11 +10,27 @@
         [Fact]
         public void Start_SetTwoValues()
         {
-            Game game = new Game();
+            Mock<Board> boardMock = new Mock<Board>();
+            Game game = new Game(boardMock.Object);
+
+            boardMock.Setup(x => x.AllCells).Returns(new int[] { 2, 2 });
+
             game.Start();
 
-            Assert.Equal(2, game.Board.AllCells.Count(x => x > 0));
-            Assert.All(game.Board.AllCells, c => Assert.True(c == 0 || c == 2 || c == 4));
+            boardMock.Verify(x => x.Set(It.IsAny<int>(), It.IsAny<int>(), It.Is<int>(v => v == 2 || v == 4)), Times.AtLeast(2));
+        }
+
+        [Fact]
+        public void Right_SetOneNewValue()
+        {
+            Mock<Board> boardMock = new Mock<Board>();
+            Game game = new Game(boardMock.Object);
+
+            boardMock.Setup(x => x.IsFree(2, 3)).Returns(true);
+
+            game.Right();
+
+            boardMock.Verify(x => x.Set(2, 3, It.Is<int>(v => v == 2 || v == 4)));
         }
     }
 }

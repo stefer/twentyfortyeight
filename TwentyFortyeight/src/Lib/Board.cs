@@ -9,6 +9,18 @@ namespace TwentyFortyeight.Lib
 
     public abstract class Board
     {
+        public struct Position
+        {
+            public Position(int row, int column)
+            {
+                Row = row;
+                Column = column;
+            }
+
+            public int Row;
+            public int Column;
+        }
+
         public const int Size = 4;
         public const int Last = Size - 1;
         public const int First = 0;
@@ -25,6 +37,13 @@ namespace TwentyFortyeight.Lib
         }
 
         public abstract void Set(int v1, int v2, int v3);
+
+        public abstract void Right();
+        public abstract void Left();
+        public abstract void Up();
+        public abstract bool IsFree(int row, int column);
+        public abstract void Down();
+
     }
 
     public class BoardImplementation : Board
@@ -93,8 +112,7 @@ namespace TwentyFortyeight.Lib
 
         public int[] GetColumn(int ci)
         {
-            return (from ri in Sequence(First, Last) select Get(ri, ci))
-                    .ToArray();
+            return (from ri in Sequence(First, Last) select Get(ri, ci)).ToArray();
         }
 
         public void SetColumn(int ci, int[] values)
@@ -105,7 +123,7 @@ namespace TwentyFortyeight.Lib
             }
         }
 
-        public void Right()
+        public override void Right()
         {
             ShiftAll(from ri in Sequence(First, Last)
                      from ci in Sequence(First, Last - 1).Reverse()
@@ -113,7 +131,7 @@ namespace TwentyFortyeight.Lib
                      select new Index(ri, ri, i - 1, i));
         }
 
-        public void Left()
+        public override void Left()
         {
             ShiftAll(from ri in Sequence(First, Last)
                      from ci in Sequence(First + 1, Last)
@@ -121,7 +139,7 @@ namespace TwentyFortyeight.Lib
                      select new Index(ri, ri, i + 1, i));
         }
 
-        public void Up()
+        public override void Up()
         {
             ShiftAll(from ci in Sequence(First, Last)
                      from ri in Sequence(First + 1, Last)
@@ -129,12 +147,17 @@ namespace TwentyFortyeight.Lib
                      select new Index(i + 1, i, ci, ci));
         }
 
-        public void Down()
+        public override void Down()
         {
             ShiftAll(from ci in Sequence(First, Last)
                      from ri in Sequence(First, Last - 1).Reverse()
                      from i in Sequence(ri + 1, Last)
                      select new Index(i - 1, i, ci, ci));
+        }
+
+        public override bool IsFree(int row, int column)
+        {
+            return Get(row, column) == 0;
         }
 
         private void ShiftAll(IEnumerable<Index> indices)

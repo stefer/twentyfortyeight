@@ -7,7 +7,17 @@ namespace TwentyFortyeight.Lib
     {
         private readonly Random rand = new Random();
 
-        public Board Board { get; set; } = Board.Create();
+        public Game(Board board)
+        {
+            Board = board;
+        }
+
+        public Game()
+        {
+            Board = Board.Create();
+        }
+
+        private Board Board { get; set; }
 
         public void Start()
         {
@@ -19,9 +29,28 @@ namespace TwentyFortyeight.Lib
             }  while (Board.AllCells.Count(cellvalue => cellvalue != 0) < 2);
         }
 
+        public void Right()
+        {
+            SetRandomAtFreeCell();
+            Board.Right();
+        }
+
+        private void SetRandomAtFreeCell()
+        {
+            var freePositions =
+                (from column in Enumerable.Range(0, Board.Size)
+                from row in Enumerable.Range(0, Board.Size)
+                where Board.IsFree(row, column)
+                select new Board.Position(row, column)).ToList();
+
+            var position = freePositions[rand.Next(0, freePositions.Count)];
+
+            Board.Set(position.Row, position.Column, NewNumber());
+        }
+
         private int NewNumber()
         {
-            return rand.Next(1, 3) * 2;
+            return rand.Next() > 0.9 ? 4 : 2;
         }
 
         private int RandomBySize()
